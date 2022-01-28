@@ -1,7 +1,9 @@
 package city;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class City {
 
@@ -33,40 +35,67 @@ public class City {
         buildings.add(building);
     }
 
+//    public Building findHighestBuilding() {
+//        Building highest = buildings.get(0);
+//        for (Building actual: buildings) {
+//            if (actual.getLevels() > highest.getLevels()) {
+//                highest = actual;
+//            }
+//        }
+//        return highest;
+//    }
+
     public Building findHighestBuilding() {
-        Building highest = buildings.get(0);
-        for (Building actual: buildings) {
-            if (actual.getLevels() > highest.getLevels()) {
-                highest = actual;
-            }
-        }
-        return highest;
+        return buildings
+                .stream()
+                .max(Comparator.comparing(Building::getLevels))
+                .orElseThrow(() -> new IllegalStateException("Empty building list."));
     }
+
+//    public List<Building> findBuildingsByStreet(String street) {
+//        List<Building> result = new ArrayList<>();
+//        for (Building actual: buildings) {
+//            if (street.equals(actual.getAddress().getStreet())) {
+//                result.add(actual);
+//            }
+//        }
+//        return result;
+//    }
 
     public List<Building> findBuildingsByStreet(String street) {
-        List<Building> result = new ArrayList<>();
-        for (Building actual: buildings) {
-            if (street.equals(actual.getAddress().getStreet())) {
-                result.add(actual);
-            }
-        }
-        return result;
+        return buildings
+                .stream()
+                .filter(building -> street.equals(building.getAddress().getStreet()))
+                .toList();
     }
+
+//    public boolean isThereBuildingWithMorePeopleThan(int numberOfPeople) {
+//        for (Building actual: buildings) {
+//            if (actual.calculateNumberOfPeopleCanFit() > numberOfPeople) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public boolean isThereBuildingWithMorePeopleThan(int numberOfPeople) {
-        for (Building actual: buildings) {
-            if (actual.calculateNumberOfPeopleCanFit() > numberOfPeople) {
-                return true;
-            }
-        }
-        return false;
+        return buildings
+                .stream()
+                .anyMatch(building -> building.calculateNumberOfPeopleCanFit() > numberOfPeople);
     }
 
+//    private int getAllBuildingsArea() {
+//        int sum = 0;
+//        for (Building actual: buildings) {
+//            sum += actual.getArea();
+//        }
+//        return sum;
+//    }
+
     private int getAllBuildingsArea() {
-        int sum = 0;
-        for (Building actual: buildings) {
-            sum += actual.getArea();
-        }
-        return sum;
+        return buildings
+                .stream()
+                .mapToInt(Building::getArea)
+                .sum();
     }
 }
